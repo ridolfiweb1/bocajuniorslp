@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bocajuniorslp.vercel.app/sitemap.xml
+Sitemap: https://bocajuniorscamposeliseos.com.br/sitemap.xml
