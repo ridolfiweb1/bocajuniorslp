@@ -530,40 +530,47 @@
 
       const form = document.getElementById('lead-form');
       const success = document.getElementById('form-success');
+      const btnEnviar = document.getElementById('btn-enviar-form');
 
-      // Get form data
-      const formData = {
-        nome_responsavel: document.getElementById('nome-responsavel').value,
-        nome_crianca: document.getElementById('nome-crianca').value,
-        idade_crianca: document.getElementById('idade-crianca').value,
-        telefone: document.getElementById('telefone').value
-      };
-
-      console.log('Lead capturado:', formData);
+      const nome_responsavel = document.getElementById('nome-responsavel').value;
+      const nome_crianca = document.getElementById('nome-crianca').value;
+      const idade_crianca = document.getElementById('idade-crianca').value;
+      const telefone = document.getElementById('telefone').value;
 
       // Build WhatsApp message
       const message = `Olá! Gostaria de agendar uma aula experimental.\n\n` +
         `📋 *Dados do responsável:*\n` +
-        `Nome: ${formData.nome_responsavel}\n\n` +
+        `Nome: ${nome_responsavel}\n\n` +
         `👦 *Dados da criança:*\n` +
-        `Nome: ${formData.nome_crianca}\n` +
-        `Idade: ${formData.idade_crianca} anos\n\n` +
-        `📞 WhatsApp: ${formData.telefone}`;
+        `Nome: ${nome_crianca}\n` +
+        `Idade: ${idade_crianca} anos\n\n` +
+        `📞 WhatsApp: ${telefone}`;
 
       const whatsappUrl = `https://wa.me/5519983976507?text=${encodeURIComponent(message)}`;
 
-      // Show success and hide form
-      form.style.display = 'none';
-      success.classList.add('show');
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
 
-      // Update WhatsApp link in success message
-      const successWhatsappBtn = success.querySelector('.btn-whatsapp');
-      if (successWhatsappBtn) {
-        successWhatsappBtn.href = whatsappUrl;
-      }
+      // Send to Formspree
+      fetch('https://formspree.io/f/mkoerawy', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome_responsavel, nome_crianca, idade_crianca, telefone })
+      })
+      .finally(() => {
+        // Show success and hide form regardless of Formspree result
+        form.style.display = 'none';
+        success.classList.add('show');
 
-      // Open WhatsApp automatically
-      window.open(whatsappUrl, '_blank');
+        // Update WhatsApp link in success message
+        const successWhatsappBtn = success.querySelector('.btn-whatsapp');
+        if (successWhatsappBtn) {
+          successWhatsappBtn.href = whatsappUrl;
+        }
+
+        // Open WhatsApp automatically
+        window.open(whatsappUrl, '_blank');
+      });
     }
 
     // Smooth scroll for anchor links
